@@ -1,0 +1,234 @@
+﻿----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+@cplaster - Build 0.0.0.1 (Debug) - 2016-02-02 | 15:38
+Started a new project derived from the existing codebase, hence the build number reset. Removed a number of deprecated classes from the codebase, as well as some
+debugging stuff. There is still some deprecated code within existing classes, so a code audit is in order. The next few builds will target removing said code, and 
+refactoring duplicate code to make use of AudioEngine, where appropriate.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+@cplaster - Build 4.0.0.7 (Debug) - 2015-09-16 | 20:49
+Refactored the Database.cs code into Database2.cs. This did require a database reserialization. Also rolled the PlaylistObject into the Database object, as 
+Database.Playlist. Mixed some minor issues with saving a playlist to a .m3u file. Playlist do not support streaming at this time.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+@cplaster - Build 4.0.0.5 (Debug) - 2015-09-16 | 15:52
+Fixed a bug where pressing the play button when a song is paused would restart the song from the beginning instead of unpausing.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+@cplaster - Build 4.0.0.4 (Debug) - 2015-08-26 | 20:40
+Added the PlaylistObject class. The purpose of the class is to load M3U and WPL files and wrap them in an object that exposes the playlist as a 
+Database.SongCollection. Is also currently capable of saving playlist contents as a M3U file. Will use this class to replace the same functionality
+in Playlist.xaml at a later time.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+@cplaster - Build 4.0.0.4 (Debug) - 2015-07-01 | 15:52
+Fixed some errors with how the TagDialog updates the playlist and the datastore.
+
+[BUG] The TagDialog window has a bug where if you open a file and fingerprint it, then hit save, it causes an exception because this._row is undefined.
+This will require some switching around of how this is handled, because there is no corresponding row in the playlist and maybe not in the datastore.
+
+Changed the database objects around some, created SongCollection, ImageCollection, and SongsAlbumCollection to hold their respective objects instead of using a 
+generic list. These classes implement INotifyPropertyChanged, so any databound UI elements should update immediately when the contents are changed.
+
+Also fixed up the TagEditorwindow.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+@cplaster - Build 4.0.0.3 (Debug) - 2015-07-01 | 15:04
+Changelog.txt and Copyright.txt were incorrectly flagged as Resource instead of Content
+This build corrects this behavior so the About window shows the correct information.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+@cplaster - Build 4.0.0.2 (Debug) - 2015-07-01 | 15:00
+Added DBFixer solution so the new database can be rebuilt from the existing dataset base if things go wrong.
+
+Added About window.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+@cplaster - Build 4.0.0.1 (Debug) - 2015-06-27 | 17:43
+Fixed previous playlist bug.
+
+Also actually implemented repeat and shuffle, which was never fleshed out before.
+
+TODO:
+	Test saving/loading of playlist;
+	Add tag editing/fingerprint support and test.
+
+[BUG] Datastore is not saved when close button in main window is clicked.
+
+Otherwise most basic functionality should work just fine.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+@cplaster - Build 4.0.0.0 (Debug) - 2015-06-27 | 09:45
+Retrofitted the rest of the code to use the new backing store. Lots of things that were previously scattered around in different window methods have been condensed 
+into the AudioEngine object where appropriate.
+
+There are a few bugs:
+[BUG] Adding multiple items to the playlist only shows the first item in the playlist window.
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+@cplaster - Build 3.0.0.27 (Debug) - 2015-06-18 | 21:47
+The serialized dataset used as the backing store caused the application to take up a LOT of ram. Retrofitted the code to use a simpler List<T> to maintain the data.
+This should reduce the memory overhead somewhat.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+@cplaster - Build 3.0.0.26 (Debug) - 2015-01-15 | 11:33
+There was a bug where the Auto-Tagger could not process .WMA files because there is no WmaFileReader class in the main NAudio Package. However, this class does exist
+in the NAudio.Wma package. Installing this package and doing a minor edit to the FingerPrinter.NAudio.NAudioDecoder class to add support for WmaFileReader fixed this
+issue. Missing builds were internal debugging builds. Pushing deployment to test for additional problems, but should work just fine. 
+
+BUG: The .WMA albums i tried consistently failed to do a proper PlayNext(), however I have had this problem previously with .MP3 tracks. I suspect this may be 
+where the actual playback time doesn't match up exactly with the tagged play time? Take a look at the playback event and see why the /trackstopped/ event isn't 
+firing off, or what is preventing it from executing correctly if it is fired.
+
+BUG: Auto-tagged changes do not save correctly to the backing store. This is probably due the conditional statement for how rows are checked for creation/modification
+in the library helper CopyEdits() method. Will have to set some breakpoints to figure out the problem. This could be how the auto-tagger modifies the tag information
+in the playlist window.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+@cplaster - Build 3.0.0.23 (Debug) - 2015-01-15 | 10:03
+Apparently the NAudio engine does natively support .WMA files, so added a selection to Playlist for .wma files (no support for .wma playlists yet). TagLib also natively
+supports .wma, so it seems to work without much other fussing. This is a deploy build to ensure that this actually works correctly and actually adds .wma files to the
+backing store.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+@cplaster - Build 3.0.0.22 (Debug) - 2014-10-02 | 17:14
+Fixed a bug where some album images where being requested when they didn't need to be.
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+@cplaster - Build 3.0.0.21 (Debug) - 2014-10-02 | 16:34
+Squashed some memory leaks, added forced garbage collection after each library search.
+Also added an error console window which captures stdout and stderr.
+I'm not entirely convinced I've got things tuned as tightly as it should be. Taking up ~220MB of memory seems excessive, the whole database itself is 
+significantly less than that.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+@cplaster - Build 3.0.0.20 (Debug) - 2014-08-23 | 01:57
+Fixed regex parsing in the tag editor to automagically escape certain character sequences that otherwise cause the regex to raise an exception.
+This is pretty much just for lazieness. Specifically the "\", "(", and ")" characters are auto-escaped, as these WILL raise an exception if not escaped.
+Other special characters (like the full-stop "." for example) will probably not be parsed as string literals without being manually escaped. 
+Good to know.
+
+Need to look at a memory profiler, starting to suck up a lot more memory than we should be...
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+@cplaster - Build 3.0.0.18 (Debug) - 2014-08-07 | 23:36
+Fixed a bug where search results would not be ordered correctly when included in the playlist.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+@cplaster - Build 3.0.0.16 (Debug) - 2014-08-07 | 20:58
+Fixed versioning in the About window, added revised copyright information.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+@cplaster - Build 3.0.0.14 (Debug) - 2014-08-07 | 17:41
+Made some changes to deployment, will now deploy from nixhex.changeip.org/RockBox  and update from that location as well.
+The interim builds were used to verify deployment works correctly.
+
+Also changed the save location for the .bin file, it now saves to /AppData/{Application.GUID}  instead as this is preserved between versions.
+Previously we just saved to the install directory, which is diffrent for each build, so the database had to be rebuilt every time. This should eliminate 
+that problem.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+@cplaster - Build 3.0.0.8 (Debug) - 2014-07-24 | 00:23
+Replaced Library with Library2, which includes preliminary support for searching playlists.
+
+This doesn't quite work the way it should just yet, but does support different results view which will be useful moving forward.
+
+There are some issues on how the playlist tag edits get propagated to the datasource. Currently changes are only commited on window close, which means
+any playlist edits will be lost if the playlist is cleared first. Not sure the best way to handle this, there may be times we want to discard the edits.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+@cplaster - Build 3.0.0.7 (Debug) - 2014-07-23 | 17:26
+Fixed some datasource issues with the TagEditor.
+Added support for in-database playlists and added SavePlaylistDialog.
+
+This did force a schema change to the datasource, so we can't use old .bin files anymore. Hopefully there won't be a schema change again soon.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+@cplaster - Build 3.0.0.6 (Debug) - 2014-07-18 | 12:33
+Added missing application icon.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+@cplaster - Build 3.0.0.5 (Debug) - 2014-07-18 | 00:00
+Minor fix for a constraint exception on dsMusic.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+@cplaster - Build 3.0.0.4 (Debug) - 2014-07-18 | 00:00
+Added the TagDialog editor which supports Fingerprinting, which is reeeeeallly cool!
+TagDialog runs a fingerprinting algorthm on the selected file and allows one to choose the best match and import the tagdata from that match.
+Added the ability to use TagDialog from the playlist context menu. Also added a button (needs a unique image, just a placeholder for now) which attempts to 
+run Fingerprinting on the entire playlist. For now this simply selects the first fingerprint match found, this could be made a little bit smarter.
+
+Pretty cool stuff!
+
+One thing about automatic Fingerprinting on the playlist is that it of course fills in the correct album and track info, which its exactly what you want if you 
+wish to search for compilation albums or mix cds. Need to figure out a way to incorporate playlists into the library search to avoid tainting the database.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+@cplaster - Build 3.0.0.3 (Debug) - 2014-07-12 | 11:50
+Fixed the playlist bug.
+
+Fixed tag editor not displaying directories correctly.
+Note: Any modifications made by the tag editor will not be propagated to the datastore until it can be fully debugged.
+
+The tag editor UI also needs to be tweaked slightly so modified cells don't always spread the value throughout the column. 
+Sometimes that is the desired behavior, other times it isn't. Need to find a better way to present this in the UI.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+@cplaster - Build 3.0.0.2 (Debug) - 2014-07-11 | 5:11
+Another test build, the full archive weighs in at 22.23MB, not including most images. This is a significant reduction in space versus .mdf.
+One other consideration is that currently the application consumes around 100MB of RAM, which is more than the 2.0 branch, but significantly less if you factor in the SQL server overhead. So far so good.
+
+EDIT: There is a bug where a .m3u playlist will not display in the playlist window if the tracks already exist in the database. This shouldn't be a problem to get fixed.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+@cplaster - Build 3.0.0.0 (Debug) - 2014-07-11 | 02:10
+New branch to remove MSSQL.
+
+In this branch I will experiment with using a serialized dataset and LINQ queries as opposed to SQL.
+Some preliminary tests seem to show this could be viable, with each row occupying well under 1KB. The MSSQL .mdf files averaged over 2KB, so this an improvement in 
+storage space efficiency.
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+@cplaster - Build 2.0.0.16 (Debug) - 2014-07-10 | 21:54
+Tracked down an error where SQL Express Local DB was not flagged as a prerequisite, causing application crash.
+This deployment should fix the problem.
+
+EDIT: This does fix the problem, however the SQL Express LocalDB component cannot be added to some instances of windows that have not received proper
+updates. I may have to consider another approach besides using MSSQL :-(
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+@cplaster - Build 2.0.0.14 (Debug) - 2014-07-10 | 20:31
+Previous builds continued to be test builds, in order to get deployment correct.
+For deployment builds, we'll be using a empty Music_DB table from now on, which is what we should have used all along.
+Reduces the total package size to ~10 MB from 70+ MB.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+@cplaster - Build 2.0.0.6 - 2014-06-06 | 13:02
+New Test Build
+
+Hopefull VS will output stuff correctly this time...
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+@cplaster - Build 2.0.0.5 - 2014-06-06 | 12:48
+New Test Build
+
+Adds buttons for Tag Editor and Library to the playlist window. Will replace with final icons in a later build.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+@cplaster - Build 2.0.0.4 - 2014-06-06 | 11:58
+First changelog post!
+
+Rockbox 2.0 is a partial rewrite from my Rockbox 1.0 codebase. Surprise!
+Notable changes are better multithread support and a lot of polish. But, there's a lot left to do:
+
+TODO:
+* Create a proper first-run procedure that creates an empty database. This seems not to work right as the development
+is not copied to the proper directory by default. I don't know why the installer does this.
+
+* Provide a better UI interface for accessing the other windows, like the Library, Library Editor, and Tag Editor. The context menu seems clunky for this.
+
+* Allow a playlist item's tags to be edited individually. The current tag editor functions more of a DB Fixer, which while useful, doesn't provide that functionality.
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
