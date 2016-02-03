@@ -109,6 +109,9 @@ namespace RockBox
                         foreach (string fn in dlg.FileNames)
                         {
 
+                            Database.Song s = this.wndMainWindow.AudioEngine.Datastore.Songs.AddFile(new System.IO.FileInfo(fn));
+                            this.wndMainWindow.AudioEngine.Playlist.Add(s);
+
                             //this.wndMainWindow.AudioEngine.Playlist.AddFile(new System.IO.FileInfo(fn));
 
                         }
@@ -213,7 +216,8 @@ namespace RockBox
             {
                 // FIXME:
                 // the thing that sucks about this is that it blocks the ui thread. booo. 
-                id = this.wndMainWindow.AudioEngine.Datastore.Songs.AddFile(fileinfo);
+                Database.Song s = this.wndMainWindow.AudioEngine.Datastore.Songs.AddFile(fileinfo);
+                id = s.Id;
             }
             else
             {

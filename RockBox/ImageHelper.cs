@@ -214,7 +214,8 @@ namespace RockBox
             return image;
         }
 
-
+        //WARNFIX
+        /*
         public static byte[] DownloadAndSaveImageOLD(Database d, string artist, string album)
         {
             byte[] image;
@@ -245,19 +246,16 @@ namespace RockBox
             }
             else
             {
-                /*FIXME: A potential problem here is that if no image for the album is found, we insert default copy into the database, which we really don't need/want to do.
-                 * it would be better to just return null here instead.
-                image = ImageHelper.GetDefaultImage();
-                MemoryStream ms = new MemoryStream(image);
-                Bitmap bi = new Bitmap(ms, false);
-                ica.Insert(artist, album, "", image, "large", "default.png");
-                 */
+
                 image = null;
 
             }
             return image;
         }
+        */
 
+        //WARNFIX
+        /*
         public static bool ImagesCacheIsInDatabase(Database d, string artist, string album)
         {
             if (d.Images.Count > 0)
@@ -267,7 +265,10 @@ namespace RockBox
 
             return false;
         }
+        */
 
+        //WARNFIX
+        /*
         public static byte[] GetFromDatabase(Database d, string artist, string album)
         {
             byte[] image = null;
@@ -281,6 +282,7 @@ namespace RockBox
 
             return image;
         }
+        */
 
 
 

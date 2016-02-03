@@ -749,7 +749,10 @@ namespace RockBox
             get { return this.inputStream.Volume; }
             set
             {
-                this.inputStream.Volume = value;
+                if (this.inputStream != null)
+                {
+                    this.inputStream.Volume = value;
+                }
             }
         }
         #endregion

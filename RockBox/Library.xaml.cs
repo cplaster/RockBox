@@ -30,10 +30,15 @@ namespace RockBox
         System.Collections.ArrayList listView = new ArrayList();
         ListBox targetList;
         bool backload = false;
-        object objAlbumArtLock = new object();
+
+        //WARNFIX
+        //object objAlbumArtLock = new object();
+
         private int clickCounter = 0;
         private ObservableCollection<AlbumDataItem> albumItems = new ObservableCollection<AlbumDataItem>();
-        private ObservableDictionary<string, BitmapImage> imageItems = new ObservableDictionary<string, BitmapImage>();
+        //WARNFIX
+        //private ObservableDictionary<string, BitmapImage> imageItems = new ObservableDictionary<string, BitmapImage>();
+
         private object albumItemsLock = new object();
         private System.Windows.Forms.Timer timer1;
 

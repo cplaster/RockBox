@@ -432,21 +432,6 @@ namespace RockBox
             bool ret = true;
             string folder = UserDataFolder;
 
-            /*
-            try
-            {
-                using (Stream stream = File.Open(folder + "\\Images.bin", FileMode.Open))
-                {
-                    BinaryFormatter bin = new BinaryFormatter();
-                    this._ImageCollection = (ImageCollection)bin.Deserialize(stream);
-                }
-            }
-            catch (IOException)
-            {
-                ret = false;
-            }
-            */
-
             try
             {
                 using (Stream stream = File.Open(folder + "\\ImagesCache.bin", FileMode.Open))
@@ -802,6 +787,11 @@ namespace RockBox
             /// while another collection change is still being notified to other listeners </exception> 
             protected void CheckReentrancy()
             {
+                if(_monitor == null)
+                {
+                    _monitor = new SimpleMonitor();
+                }
+
                 if (_monitor.Busy)
                 {
                     // we can allow changes if there's only one listener - the problem
@@ -1005,29 +995,54 @@ namespace RockBox
                 return i;
             }
 
-            public virtual int AddRow(string path, string filename, string title, string artist, string album, string year, string length, string bitrate, string genre, string track, string comments)
+            private void FixMaxId()
             {
+                int max = -1;
+
+                foreach(Song s in this.AsEnumerable())
+                {
+                    if(s.Id > max)
+                    {
+                        max = s.Id;
+                    }
+
+                    this.maxId = max;
+                }
+            }
+
+            public virtual Song AddRow(string path, string filename, string title, string artist, string album, string year, string length, string bitrate, string genre, string track, string comments)
+            {
+
+                if(this.MaxId <= 0)
+                {
+                    FixMaxId();
+                }
+
                 int id = this.MaxId;
 
-                Song s = this.FindByPathAndFileName(path, filename);
+                FileInfo f = new FileInfo(path + "\\" + filename);
 
                 //Check to see if the song is already in the collection. If not, increment the maxid, create a new Song object with the new maxid, and add it to the collection, returning
                 //the new row's ID. If it is already in the collection, do nothing and return -1 to indicate a new row was not created or added.
 
-                if (s == null)
+                int i = 0;
+
+
+                if (!this.Contains(f))
                 {
                     this.maxId++;
                     Database.Song sr = new Database.Song(this.MaxId, path, filename, title, artist, album, year, length, bitrate, genre, track, comments);
                     this.Add(sr);
-                    return this.MaxId;
+                    return sr;
                 }
                 else
                 {
-                    return -1;
+                    Database.Song sr = this.FindByPathAndFileName(path, filename);
+                    return sr;
                 }
             }
 
-            public int AddFile(FileInfo f)
+            public Song AddFile(FileInfo f)
             {
                 // this method is pretty prone to problems.
                 // We try to read tag information from the audio file.
@@ -1098,13 +1113,11 @@ namespace RockBox
                     sec = temp2[0];
                     length = hour + ":" + min + ":" + sec;
 
-                    int id = this.AddRow(f.Directory.FullName, f.Name, title, artist, album, year, length, bitrate, genre, track, comments);
-
-                    return id;
+                    return this.AddRow(f.Directory.FullName, f.Name, title, artist, album, year, length, bitrate, genre, track, comments);
                 }
                 else
                 {
-                    return -1;
+                    return null;
                 }
             }
 
@@ -1129,6 +1142,37 @@ namespace RockBox
                 else
                 {
                     return null;
+                }
+            }
+
+            public bool Contains(FileInfo f)
+            {
+                var query = from r in this.AsEnumerable()
+                            where r.Path == f.Directory.FullName && r.Filename == f.Name
+                            select r;
+
+                if (query.Count() > 0)
+                {
+                    return true;
+                } else
+                {
+                    return false;
+                }
+            }
+
+            public bool Contains(int id)
+            {
+                var query = from r in this.AsEnumerable()
+                            where r.Id == id
+                            select r;
+
+                if(query.Count() > 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
                 }
             }
 
@@ -1276,6 +1320,7 @@ namespace RockBox
             public int AddRow(string playlistName1, string artistName, string rowids, string fullName, string filename, string playlistName2)
             {
                 Database.SongsAlbum sr = new Database.SongsAlbum(playlistName1, artistName, rowids, fullName, filename, playlistName2);
+                this.Add(sr);
 
                 return this.MaxId;
             }
@@ -1384,12 +1429,12 @@ namespace RockBox
                 Load(filename);
             }
 
-            public override int AddRow(string path, string filename, string title, string artist, string album, string year, string length, string bitrate, string genre, string track, string comments)
+            public override Song AddRow(string path, string filename, string title, string artist, string album, string year, string length, string bitrate, string genre, string track, string comments)
             {
                 this.maxId++;
                 Database.Song sr = new Database.Song(this.MaxId, path, filename, title, artist, album, year, length, bitrate, genre, track, comments);
                 this.Add(sr);
-                return this.MaxId;
+                return sr;
             }
 
             public void Save()
@@ -1525,8 +1570,9 @@ namespace RockBox
                         temp = temp.TrimEnd("\n".ToCharArray());
                         string[] topbottom = temp.Split("\n".ToCharArray());
                         string[] top = topbottom[0].Split(",".ToCharArray());
-                        string length = top[0];
-                        string title = top[1];
+                        //WARNFIX
+                        //string length = top[0];
+                        //string title = top[1];
                         string uristring = topbottom[1];
 
                         FileInfo f = new FileInfo(FileName);

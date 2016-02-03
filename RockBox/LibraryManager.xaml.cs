@@ -1,18 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using System.ComponentModel;
 
 namespace RockBox
 {
@@ -28,8 +18,6 @@ namespace RockBox
             InitializeComponent();
         }
 
-
-
         private void MoveWindow(object sender, MouseButtonEventArgs e)
         {
             this.DragMove();
@@ -38,7 +26,9 @@ namespace RockBox
         private void btnBrowse_Click(object sender, RoutedEventArgs e)
         {
             System.Windows.Forms.FolderBrowserDialog dlg = new System.Windows.Forms.FolderBrowserDialog();
-            System.Windows.Forms.DialogResult results = dlg.ShowDialog();
+            //WARNFIX
+            //System.Windows.Forms.DialogResult results = dlg.ShowDialog();
+            dlg.ShowDialog();
             txtDirectory.Text = dlg.SelectedPath;
             btnAdd_Click(sender, e);
         }
@@ -94,9 +84,9 @@ namespace RockBox
                 {
                     FileInfo f = new FileInfo(file);
                     DirectoryInfo d = f.Directory;
-                    if (!DirectoryHelper.IsInLibrary(sta, f))
+                    if (!sta.Songs.Contains(f))
                     {
-                        DirectoryHelper.AddFile(sta, f);
+                        sta.Songs.AddFile(f);
                         i++;
                         Dispatcher.Invoke(updatePbDelegate,
                             System.Windows.Threading.DispatcherPriority.Background,
@@ -107,24 +97,6 @@ namespace RockBox
             }
         }
 
-        /*
-        private void btnStart_ClickOLD(object sender, RoutedEventArgs e)
-        {
-            List<string> l = new List<string>();
-            foreach (var item in lbDirectories.Items)
-            {
-                l.Add((string)item);
-            }
-            string[] s = { ".mp3", ".ogg" };
-            DirectoryHelper.SuperDirectoryCollection coll = DirectoryHelper.ScanDirectories(l.ToArray());
-
-            coll.ApplyExtensionFilter(s);
-
-            int i = DirectoryHelper.AddCollection(coll);
-
-            tbStatus.Text = "Directories: " + coll.DirectoryCount.ToString() + "  |  Files: " + i.ToString();
-        }
-        */
         private void btnEmpty_Click(object sender, RoutedEventArgs e)
         {
             //LibraryHelper.EmptyDatabase();

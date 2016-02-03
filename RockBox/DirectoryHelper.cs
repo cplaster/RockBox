@@ -196,105 +196,15 @@ namespace RockBox
             }
         }
 
-        internal static int AddFile(Database db, FileInfo f)
-        {
-            // this method is pretty prone to problems.
-            // We try to read tag information from the audio file.
-            // If there is any sort of problem with that, we will just
-            // skip adding it to the database for now.
-
-            TagLib.File file = null;
-            TagLib.Tag tag = null;
-            bool fail = false;
-
-            try
-            {
-                file = TagLib.File.Create(f.FullName);
-                tag = file.Tag;
-            }
-            catch (Exception e)
-            {
-                fail = true;
-            }
-
-
-            // the file can't be added if there are no tags
-            if (!fail)
-            {
-                string title = tag.Title == null ? " " : tag.Title;
-                string artist = " ";
-                if (tag.AlbumArtists.Length > 0)
-                {
-                    artist = tag.AlbumArtists[0];
-                }
-                else
-                {
-                    if (tag.Artists.Length > 0)
-                    {
-                        artist = tag.Artists[0];
-                    }
-                }
-                string album = tag.Album == null ? " " : tag.Album;
-                string year = tag.Year.ToString() == null ? " " : tag.Year.ToString();
-                string length = file.Properties.Duration == null ? "00:00:00" : file.Properties.Duration.ToString();
-                string bitrate = file.Properties.AudioBitrate.ToString() == null ? " " : file.Properties.AudioBitrate.ToString();
-                string genre = " ";
-                if (tag.Genres.Length > 0)
-                {
-                    genre = tag.Genres[0];
-                }
-                string track = tag.Track.ToString();
-                string comments = " ";
-
-                char[] trimChars = " \r\n\t\0".ToCharArray();
-
-                title.Trim(trimChars);
-                artist.Trim(trimChars);
-                album.Trim(trimChars);
-                year.Trim(trimChars);
-                length.Trim(trimChars);
-                bitrate.Trim(trimChars);
-                genre.Trim(trimChars);
-                track.Trim(trimChars);
-                comments.Trim(trimChars);
-
-                string hour, min, sec;
-                string[] temp = length.Split(":".ToCharArray());
-                hour = temp[0];
-                min = temp[1];
-                sec = temp[2];
-                string[] temp2 = sec.Split(".".ToCharArray());
-                sec = temp2[0];
-                length = hour + ":" + min + ":" + sec;
-
-                return db.Songs.AddRow(f.Directory.FullName, f.Name, title, artist, album, year, length, bitrate, genre, track, comments);
-            }
-            else
-            {
-                return -1;
-            }
-        }
-
-
-        internal static bool IsInLibrary(Database db, FileInfo f)
-        {
-            bool ret = false;
-            Database.SongCollection sdt = db.Songs.GetDataByPathAndFileName(f.Directory.FullName, f.Name);
-
-            if (sdt.Count > 0)
-            {
-                ret = true;
-            }
-
-            return ret;
-        }
-
+        //WARNFIX
+        /*
         internal static SuperDirectory ScanDirectory(string path)
         {
             SuperDirectory d = new SuperDirectory(path);
 
             return d;
         }
+        */
 
         internal static SuperDirectoryCollection ScanDirectories(string[] paths)
         {
@@ -309,6 +219,8 @@ namespace RockBox
             return coll;
         }
 
+        //WARNFIX
+        /*
         internal static int AddCollection(SuperDirectoryCollection coll, Database db)
         {
             int i = 0;
@@ -320,9 +232,10 @@ namespace RockBox
                 {
                     FileInfo f = new FileInfo(file);
                     DirectoryInfo d = f.Directory;
-                    if (!IsInLibrary(db, f))
+                    if (!db.Songs.Contains(f))
                     {
-                        AddFile(db, f);
+                        //AddFile(db, f);
+                        db.Songs.AddFile(f);
                         i++;
                     }
 
@@ -331,6 +244,7 @@ namespace RockBox
 
             return i;
         }
+        */
 
     }
 }
