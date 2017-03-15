@@ -42,6 +42,11 @@ namespace RockBox
             decoder = new NAudioDecoder();
         }
 
+        private void MoveWindow(object sender, MouseButtonEventArgs e)
+        {
+            this.DragMove();
+        }
+
         public void LoadFile(Database.Song sr, int index)
         {
             this._row = sr;

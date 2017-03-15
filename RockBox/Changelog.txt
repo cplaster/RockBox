@@ -1,4 +1,16 @@
 ﻿----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+@cplaster - Build 0.0.0.15 (Release) - 2016-09-18 | 20:53
+
+Interim builds were bug testing builds only.
+
+Fixed a UX issue where the Tag Editor would populate a cell's edited content to the entire column. This is not always the desired behavior, so now the cell will
+only populate it's content to the entire column if the enter key is hit. Otherwise removing focus from the cell will preserve edits strictly to the cell itself.
+
+Also added a context menu to the album images in Library, so that they may be changed.
+
+Also fixed a bug in AudioEngine where the max volume defaulted to 100.0f instead of 1.0f, which is the intended maximum. Decimals are hard, I guess.
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 @cplaster - Build 0.0.0.5 (Debug) - 2016-02-02 | 19:02
 Removed some dead code.
 

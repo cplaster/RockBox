@@ -1,4 +1,4 @@
-﻿Copyright © 2013-2015 Chad Plaster
+﻿Copyright © 2013-2017 Chad Plaster
 
 AcoustID.NET
 https://github.com/wo80/AcoustID.NET

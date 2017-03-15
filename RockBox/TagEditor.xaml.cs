@@ -26,13 +26,23 @@ namespace RockBox
         Database.SongCollection tempds;
         DataGridRow dgr;
         DataGridColumn dgc;
+        bool wasPressedEnter = false;
 
         public TagEditor()
         {
             InitializeComponent();
+            lbDirectories.PreviewKeyDown += LbDirectories_PreviewKeyDown;
         }
 
         #region Window Events
+
+        private void LbDirectories_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter || e.Key == Key.Return)
+            {
+                wasPressedEnter = true;
+            }
+        }
 
         private void Window_ContentRendered(object sender, EventArgs e)
         {
@@ -224,6 +234,7 @@ namespace RockBox
                     ret.Add(val.Value.Replace("%", ""));
                     if (index <= matches.Count - 1)
                     {
+               
                         // do stuff here.
 
                     }
@@ -281,27 +292,35 @@ namespace RockBox
         {
             dgr = e.Row;
             dgc = e.Column;
+            
         }
 
         private void lbDirectoriesCellEdited(object sender, EventArgs e)
         {
-            if (dgr != null)
+
+            if (wasPressedEnter)
             {
-                Database.Song val = dgr.Item as Database.Song;
-                string changed = val.ToArray()[dgc.DisplayIndex] as string;
+                wasPressedEnter = false;
 
-                Database.SongCollection coll = lbDirectories.ItemsSource as Database.SongCollection;
-
-                foreach (Database.Song r in coll)
+                if (dgr != null)
                 {
-                    r[dgc.DisplayIndex] = changed;
+                    Database.Song val = dgr.Item as Database.Song;
+                    string changed = val.ToArray()[dgc.DisplayIndex] as string;
+
+                    Database.SongCollection coll = lbDirectories.ItemsSource as Database.SongCollection;
+
+                    foreach (Database.Song r in coll)
+                    {
+                        r[dgc.DisplayIndex] = changed;
+                    }
+
+                    dgr = null;
+                    dgc = null;
+
+                    lbDirectories.ItemsSource = coll;
                 }
+            } 
 
-                dgr = null;
-                dgc = null;
-
-                lbDirectories.ItemsSource = coll;
-            }
         }
 
     }

@@ -32,7 +32,7 @@ namespace RockBox
         //string year;
         //string trackalbum;
         bool isPaused = false;
-        float fVolume = 100.0f;
+        float fVolume = 1.0f;
         public delegate void ImageLoadHandler(AudioEngine sender, ImageData e);
         public event ImageLoadHandler ImageLoad;
         public delegate void TagLoadHandler(AudioEngine sender, TagData e);

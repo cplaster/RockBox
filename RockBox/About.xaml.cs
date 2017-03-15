@@ -96,5 +96,10 @@ namespace RockBox
         {
             this.Hide();
         }
+
+        private void MoveWindow(object sender, MouseButtonEventArgs e)
+        {
+            this.DragMove();
+        }
     }
 }

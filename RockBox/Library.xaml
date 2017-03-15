@@ -54,7 +54,13 @@
                                                 <ColumnDefinition SharedSizeGroup="SecondColumn" Width="*"/>
                                             </Grid.ColumnDefinitions>
                                             <StackPanel Orientation="Horizontal" Width="250" Grid.Column="0" HorizontalAlignment="Left">
-                                                <Image Source="{Binding BitmapImage}" HorizontalAlignment="Left" Height="90" VerticalAlignment="Top" Width="90" Margin="10,0,0,10" MouseDown="Image_MouseDown" />
+                                                <Image Source="{Binding BitmapImage}" HorizontalAlignment="Left" Height="90" VerticalAlignment="Top" Width="90" Margin="10,0,0,10" MouseDown="Image_MouseDown">
+                                                    <Image.ContextMenu>
+                                                        <ContextMenu>
+                                                            <MenuItem Header="Change Image" Click="ImageRightClick" />
+                                                        </ContextMenu>
+                                                    </Image.ContextMenu>
+                                                </Image>
                                                 <StackPanel Orientation="Vertical" HorizontalAlignment="Left" Margin="10,0,0,10">
                                                     <Label Content="{Binding Artist}" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" Foreground="{DynamicResource FontColorWinMainStatus}"/>
                                                     <Label Content="{Binding Year}" HorizontalAlignment="Left" Margin="0,0,0,0" VerticalAlignment="Top" Foreground="{DynamicResource FontColorWinMainStatus}"/>

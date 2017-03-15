@@ -919,6 +919,35 @@ namespace RockBox
                 return this.MaxId;
             }
 
+            public int UpdateRow(string artist, string album, string uri, byte[] image, string dimensions, string name)
+            {
+                var q = from r in this.AsEnumerable()
+                        where r.Artist.ToLower() == artist.ToLower() && r.Album.ToLower() == album.ToLower()
+                        select r;
+
+                int i = 0;
+
+                foreach(var r in q)
+                {
+                    if(r.Artist == artist && r.Album == album)
+                    {
+                        r.Artist = artist;
+                        r.Album = album;
+                        r.Uri = uri;
+                        r.ImageData = image;
+                        r.Dimensions = dimensions;
+                        r.Name = name;
+
+                        i++;
+                    }
+
+                    return i;
+                }
+
+                return i;
+
+            }
+
             public int FillByArtistAndAlbum(ImageCollection collection, string Artist, string Album)
             {
                 var q = from r in this.AsEnumerable()
@@ -953,7 +982,17 @@ namespace RockBox
         [Serializable]
         public class SongCollection : ObservableDatabaseCollection<Song>
         {
-            public SongCollection() { }
+
+            List<String> _columns;
+
+            public SongCollection() {
+                _columns = new List<string> { "Path", "Filename", "Title", "Artist", "Album", "Year", "Length", "Bitrate", "Genre", "Track", "Comments" };
+            }
+
+            public List<String> Columns()
+            {
+                return _columns;
+            }
 
             public int Update(SongCollection collection)
             {
@@ -1267,13 +1306,45 @@ namespace RockBox
                             select r;
                 int i = 0;
 
+                bool isTrackOrdered = false;
+
                 foreach (var row in query)
                 {
+                    if(row.Track != "00")
+                    {
+                        isTrackOrdered = true;
+                    } else
+                    {
+                        int j = 0;
+                    }
                     collection.Add(row);
                     i++;
                 }
 
+                if(!isTrackOrdered)
+                {
+                    collection.Sort("Title");
+                }
+
                 return i;
+            }
+
+
+            private void Sort(string sortColumn)
+            {
+                int index = _columns.IndexOf(sortColumn);
+                var sc = from element in this.AsEnumerable()
+                         orderby element.Title ascending
+                         select element;
+
+                foreach (Song s in sc)
+                {
+                    this.Items.Remove(s);
+                    this.Items.Add(s);
+                }
+
+                int i = 1;
+
             }
 
             public SongCollection GetDataByAlbum(string Album)
@@ -1298,6 +1369,8 @@ namespace RockBox
                     collection.Add(row);
                     i++;
                 }
+
+                
 
                 return i;
             }

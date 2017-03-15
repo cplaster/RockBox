@@ -575,10 +575,37 @@ namespace RockBox
             }
         }
 
+
+
+
         #endregion
 
 
+        private void ImageRightClick(object sender, RoutedEventArgs e)
+        {
+            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+            dlg.DefaultExt = ".png";
+            dlg.Multiselect = false;
+            dlg.Filter = "Portable Network Graphics(.png)|*.png|JPEG (.jpg)|*.jpg|GIF(.gif)|*.gif|Bitmap(.bmp)|*.bmp";
+            Nullable<bool> result = dlg.ShowDialog();
+
+            if(result == true)
+            {
+                Uri uri = new Uri(dlg.FileName);
+                System.Drawing.Bitmap b = new System.Drawing.Bitmap(dlg.FileName);
+
+                Database.ImageCollection results = wndMainWindow.AudioEngine.Datastore.Images.GetDataByArtistAndAlbum(_DataItem.Artist, _DataItem.Name);
+                if (results.Count > 0)
+                {
+
+                    wndMainWindow.AudioEngine.Datastore.Images.UpdateRow(_DataItem.Artist, _DataItem.Name, dlg.FileName, ImageHelper.ConvertBitmapToBytes(b), b.Width.ToString() + "x" + b.Height.ToString(), _DataItem.Name);
+                } else
+                {
+                    wndMainWindow.AudioEngine.Datastore.Images.AddRow(_DataItem.Artist, _DataItem.Name, dlg.FileName, ImageHelper.ConvertBitmapToBytes(b), b.Width.ToString() + "x" + b.Height.ToString(), _DataItem.Name);
+                }
 
 
+            }
+        }
     }
 }

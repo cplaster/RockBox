@@ -4,7 +4,7 @@
         xmlns:my="clr-namespace:RockBox"
         xmlns:gif="http://wpfanimatedgif.codeplex.com"
         x:Class="RockBox.TagDialog"
-        Title="File Information" Height="500" Width="575" WindowStyle="None" AllowsTransparency="True" Background="Transparent" ShowInTaskbar="False" ResizeMode="NoResize">
+        Title="File Information" Height="500" Width="575" WindowStyle="None" AllowsTransparency="True" Background="Transparent" MouseLeftButtonDown="MoveWindow" ShowInTaskbar="False" ResizeMode="NoResize">
 
 
     <Border CornerRadius="8" Background="Transparent">
