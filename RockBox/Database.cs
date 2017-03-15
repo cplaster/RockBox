@@ -79,7 +79,7 @@ namespace RockBox
 
             BitmapImage b = new BitmapImage();
             b.BeginInit();
-            Uri uri = new System.Uri("pack://application:,,,/Resources/jewelcase_medium.png");
+            Uri uri = new System.Uri(RockBox.Properties.Resources.DefaultAlbumArtURI);
             b.UriSource = uri;
             b.EndInit();
             b.Freeze();
@@ -355,21 +355,6 @@ namespace RockBox
             bool ret = true;
             string folder = UserDataFolder;
 
-            /*
-            try
-            {
-                using (Stream stream = File.Open(folder + "\\Images.bin", FileMode.Create))
-                {
-                    BinaryFormatter bin = new BinaryFormatter();
-                    bin.Serialize(stream, this.listImages);
-                }
-            }
-            catch (IOException)
-            {
-                ret = false;
-            }
-            */
-
             try
             {
                 using (Stream stream = File.Open(folder + "\\ImagesCache.bin", FileMode.Create))
@@ -408,21 +393,6 @@ namespace RockBox
             {
                 ret = false;
             }
-
-            /*
-            try
-            {
-                using (Stream stream = File.Open(folder + "\\SongsEditor.bin", FileMode.Create))
-                {
-                    BinaryFormatter bin = new BinaryFormatter();
-                    bin.Serialize(stream, this.listSongsEditor);
-                }
-            }
-            catch (IOException)
-            {
-                ret = false;
-            }
-            */
 
             return ret;
         }
@@ -473,21 +443,6 @@ namespace RockBox
             {
                 ret = false;
             }
-
-            /*
-            try
-            {
-                using (Stream stream = File.Open(folder + "\\SongsEditor.bin", FileMode.Open))
-                {
-                    BinaryFormatter bin = new BinaryFormatter();
-                    this.listSongsEditor = (List<Database.SongsEditorRow>)bin.Deserialize(stream);
-                }
-            }
-            catch (IOException)
-            {
-                ret = false;
-            }
-            */
 
             return ret;
         }
@@ -1100,6 +1055,7 @@ namespace RockBox
                 catch (Exception e)
                 {
                     fail = true;
+                    Console.Write("Caught exception while attempting to add file: " + f.FullName + "\n" + e.Message + "\n");
                 }
 
 
@@ -1623,7 +1579,7 @@ namespace RockBox
                 }
                 else
                 {
-                    // this is not a valid windows playlist file.
+                    Console.WriteLine("Error parsing WPL file: " + this.FileName);
                 }
             }
 
@@ -1677,7 +1633,7 @@ namespace RockBox
                             }
                             catch (Exception e)
                             {
-                                // this uri is malformed somehow. just skip it.
+                                Console.Write("An error occurred while parsing M3U file: " + this.FileName + "\nThe following URI string is invalid: " + uristring + "\n");
                             }
                         }
 
@@ -1685,7 +1641,7 @@ namespace RockBox
                 }
                 else
                 {
-                    // this is not a valid m3u file.
+                    Console.Write("An error occurred while parsing M3U file: " + this.FileName + "\nThis is not a valid M3U file.\n");
                 }
             }
 
@@ -1711,6 +1667,7 @@ namespace RockBox
                     catch (Exception e)
                     {
                         fail = true;
+                        Console.WriteLine("An error occcurred while indexing the following file: " + f.FullName);
                     }
 
 
@@ -1779,6 +1736,7 @@ namespace RockBox
                 else
                 {
                     // TODO: this is streaming audio. Not yet implemented.
+                    Console.WriteLine("Streaming audio MP3 playlists are not yet supported.");
                 }
 
                 return s;

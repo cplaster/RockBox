@@ -71,6 +71,15 @@ namespace RockBox.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 8XaBELgH.
+        /// </summary>
+        internal static string AcoustIDApiKey {
+            get {
+                return ResourceManager.GetString("AcoustIDApiKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap aeroBack {
@@ -467,6 +476,15 @@ namespace RockBox.Properties {
             get {
                 object obj = ResourceManager.GetObject("cut", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to pack://application:,,,/Resources/jewelcase_medium.png.
+        /// </summary>
+        internal static string DefaultAlbumArtURI {
+            get {
+                return ResourceManager.GetString("DefaultAlbumArtURI", resourceCulture);
             }
         }
         

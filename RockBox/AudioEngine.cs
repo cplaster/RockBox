@@ -51,7 +51,7 @@ namespace RockBox
             dbDataStore.Deserialize();
             BitmapImage b = new BitmapImage();
             b.BeginInit();
-            Uri uri = new System.Uri("pack://application:,,,/Resources/jewelcase_medium.png");
+            Uri uri = new System.Uri(RockBox.Properties.Resources.DefaultAlbumArtURI);
             b.UriSource = uri;
             b.EndInit();
             b.Freeze();
@@ -93,7 +93,7 @@ namespace RockBox
                     if (String.IsNullOrEmpty(AcoustID.Configuration.ApiKey))
                     {
                         // TODO: display a prompt for api key.
-                        AcoustID.Configuration.ApiKey = "8XaBELgH";
+                        AcoustID.Configuration.ApiKey = RockBox.Properties.Resources.AcoustIDApiKey;
                     }
 
                     LookupService service = new LookupService();
@@ -172,16 +172,6 @@ namespace RockBox
                     row.Album = o.track.album.title == null ? "" : o.track.album.title;
 
                     row.Track = o.track.album.attr.position == null ? "" : o.track.album.attr.position;
-
-                    /*
-                    if (o.track.album.image.Count > 0)
-                    {
-                        ImageHelper.DownloadFile(o.track.album.image[0].text, "temp.jpg");
-                        System.Drawing.Bitmap b = new System.Drawing.Bitmap("temp.jpg");
-                        byte[] image = ImageHelper.ConvertBitmapToBytes(b);
-                        dsMusic.ImageCache.AddImageCacheRow(row.Artist, row.Album, o.track.album.image[0].text, ImageHelper.ConvertBitmapToBytes(b), "0x0", "");
-                    }
-                    */
                 }
 
                 if (o.track.artist != null)
@@ -209,16 +199,6 @@ namespace RockBox
                     row.Album = o.track.album.title == null ? "" : o.track.album.title;
 
                     row.Track = o.track.album.attr.position == null ? "" : o.track.album.attr.position;
-
-                    /*
-                    if (o.track.album.image.Count > 0)
-                    {
-                        ImageHelper.DownloadFile(o.track.album.image[0].text, "temp.jpg");
-                        System.Drawing.Bitmap b = new System.Drawing.Bitmap("temp.jpg");
-                        byte[] image = ImageHelper.ConvertBitmapToBytes(b);
-                        dsMusic.ImageCache.AddImageCacheRow(row.Artist, row.Album, o.track.album.image[0].text, ImageHelper.ConvertBitmapToBytes(b), "0x0", "");
-                    }
-                    */
                 }
 
                 if (o.track.artist != null)
